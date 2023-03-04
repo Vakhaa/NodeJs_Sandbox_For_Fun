@@ -1,6 +1,6 @@
 import got from 'got';
 
-const URL = "https://jsonplaceholder.typicode.com/users";
+const URL = "https://jsonplaceholder.typicode.com/posts";
 
 export async function getAll(req, res) {
     const data = await got.get(URL).json();
@@ -21,17 +21,13 @@ export async function getOne(req, res) {
 
 export async function create(req, res) {
 
-    let { name, username, email, address, phone, website, company } = req.body;
+    let { title, body, userId } = req.body;
 
     const data = await got.post(URL, {
         json: {
-            name,
-            username,
-            email,
-            address,
-            phone,
-            website,
-            company
+            title,
+            body,
+            userId,
         }
     }).json();
 
@@ -41,17 +37,14 @@ export async function create(req, res) {
 
 export async function update(req, res) {
 
-    let { name, username, email, address, phone, website, company } = req.body;
+    let { id, title, body, userId } = req.body;
 
     const data = await got.put(URL, {
         json: {
-            name,
-            username,
-            email,
-            address,
-            phone,
-            website,
-            company
+            id,
+            title,
+            body,
+            userId,
         }
     }).json();
 

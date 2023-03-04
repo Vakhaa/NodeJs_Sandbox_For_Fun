@@ -1,4 +1,5 @@
-import * as UsersController from '../core/jsonplaceholder/users/UsersController.js'
+import * as usersController from '../core/jsonplaceholder/usersController.js'
+import * as postsController from '../core/jsonplaceholder/postsController.js'
 
 const jsonplaceholderRouter = async (req, res) => {
 
@@ -24,9 +25,15 @@ const getRouter = (req, res) => {
     switch (req.urlWithoutParam || req.url) {
         case "/jsonplaceholder/users":
             if (!req.params)
-                UsersController.getAll(req, res);
+                usersController.getAll(req, res);
             else
-                UsersController.getOne(req, res);
+                usersController.getOne(req, res);
+            break;
+        case "/jsonplaceholder/posts":
+            if (!req.params)
+                postsController.getAll(req, res);
+            else
+                postsController.getOne(req, res);
             break;
         default:
             res.sendError(404, req.url);
@@ -38,7 +45,10 @@ const getRouter = (req, res) => {
 const postRouter = (req, res) => {
     switch (req.urlWithoutParam || req.url) {
         case "/jsonplaceholder/users":
-            UsersController.create(req, res);
+            usersController.create(req, res);
+            break;
+        case "/jsonplaceholder/posts":
+            postsController.create(req, res);
             break;
         default:
             res.sendError(404, req.url);
@@ -49,7 +59,10 @@ const postRouter = (req, res) => {
 const putRouter = (req, res) => {
     switch (req.urlWithoutParam || req.url) {
         case "/jsonplaceholder/users":
-            UsersController.update(req, res);
+            usersController.update(req, res);
+            break;
+        case "/jsonplaceholder/posts":
+            postsController.update(req, res);
             break;
         default:
             res.sendError(404, req.url);
@@ -60,7 +73,10 @@ const putRouter = (req, res) => {
 const deleteRouter = (req, res) => {
     switch (req.urlWithoutParam || req.url) {
         case "/jsonplaceholder/users":
-            UsersController.remove(req, res);
+            usersController.remove(req, res);
+            break;
+        case "/jsonplaceholder/posts":
+            postsController.remove(req, res);
             break;
         default:
             res.sendError(404, req.url);
