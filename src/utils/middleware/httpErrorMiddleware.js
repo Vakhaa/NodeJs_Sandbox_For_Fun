@@ -18,11 +18,11 @@ const httpErrorMiddleware = ({ req, res }) => {
                 switch (error.code) {
                     case 404:
                         res.writeHead(404);
-                        res.end(`{"error":{"code":"404", "message":"You're wrong, buddy! Resource not found."}}`);
+                        res.end(`{"error":{"code":"${http.STATUS_CODES[404]}", "message":"You're wrong, buddy! Resource not found."}}`);
                         break;
                     case 500:
                         res.writeHead(500);
-                        res.end(`{"error":{"code":"${error.code}", "message":"${error.message}"}}`);
+                        res.end(`{"error":{"code":"${http.STATUS_CODES[500]}", "message":"${error.message}"}}`);
                         break;
                 }
             }))

@@ -37,9 +37,8 @@ const getRouter = (req, res) => {
 
 const postRouter = (req, res) => {
     switch (req.urlWithoutParam || req.url) {
-        case "/":
-        case "/home":
-            UsersController.getAll(req, res);
+        case "/jsonplaceholder/users":
+            UsersController.create(req, res);
             break;
         default:
             res.sendError(404, req.url);
@@ -49,9 +48,8 @@ const postRouter = (req, res) => {
 
 const putRouter = (req, res) => {
     switch (req.urlWithoutParam || req.url) {
-        case "/":
-        case "/home":
-            UsersController.getAll(req, res);
+        case "/jsonplaceholder/users":
+            UsersController.update(req, res);
             break;
         default:
             res.sendError(404, req.url);
@@ -61,9 +59,8 @@ const putRouter = (req, res) => {
 
 const deleteRouter = (req, res) => {
     switch (req.urlWithoutParam || req.url) {
-        case "/":
-        case "/home":
-            UsersController.getAll(req, res);
+        case "/jsonplaceholder/users":
+            UsersController.remove(req, res);
             break;
         default:
             res.sendError(404, req.url);
