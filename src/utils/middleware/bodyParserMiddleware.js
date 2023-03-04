@@ -5,7 +5,7 @@ const bodyParserMiddleware = ({ req, res }) => {
     return new Promise((resolve, reject) => {
 
         const METHOD = req.method.toUpperCase();
-        if( METHOD == "GET" || METHOD == "DELETE") resolve({req,res});
+        if( METHOD == "GET" || METHOD == "DELETE") return resolve({req,res});
 
         try {
             collectRequestData(req, res, (body) => {

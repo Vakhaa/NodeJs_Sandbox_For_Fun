@@ -43,7 +43,7 @@ export async function update(req, res) {
 
     let { id, name, username, email, address, phone, website, company } = req.body;
 
-    const data = await got.put(URL, {
+    const data = await got.put(`${URL}/${id}`, {
         json: {
             id,
             name,
@@ -61,7 +61,7 @@ export async function update(req, res) {
 }
 
 export async function remove(req, res) {
-    const id = req.params.get(id);
+    const id = req.params.get("id");
 
     const data = await got.delete(`${URL}/${id}`).json();
 
