@@ -76,7 +76,7 @@ const sayHello = async (req, res) => {
         res.writeHead(200);
         res.end(html);
     } catch (error) {
-        res.sendError(500, req.url, "No such file or directory!");
+        res.sendError(500, req.url);
     }
 }
 
