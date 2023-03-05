@@ -1,4 +1,5 @@
 import HttpErrorManager from "../event_emitters/HttpErrorManager.js";
+import * as http from 'http';
 
 const httpErrorMiddleware = ({ req, res }) => {
 
