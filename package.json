@@ -11,8 +11,11 @@
   "author": "Denys Vynohradnyi",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
-    "got": "^12.6.0"
+    "got": "^12.6.0",
+    "jsonwebtoken": "^9.0.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.21"

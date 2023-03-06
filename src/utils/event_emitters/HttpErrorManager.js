@@ -9,24 +9,26 @@ class HttpErrorManager extends EventEmitter {
         super();
     }
 
-    error(code, path) {
+    error(code, path, message) {
 
         let date = new Date(Date.now());
-        let message = this._getErrorMessage(code);
+        let description = message || this._getErrorMessage(code);
 
         this._logError(code, path, date, message);
 
-        this.emit("error", new BaseError(http.STATUS_CODES[code], code, true, message));
+        this.emit("error", new BaseError(http.STATUS_CODES[code], code, true, description));
     }
 
     _logError(code, path, date, message) {
         console.log(`Error: ${code} (${date.toUTCString()})`);
         console.log(`Path: ${path}`);
-        if (message != "without message") console.log(message);
+        if (message != "without message" && message) console.log(message);
     }
 
     _getErrorMessage = (code) => {
         switch (code) {
+            case 401:
+                return "Who are you? 8D";
             case 404:
                 return "You're wrong, buddy! Resource not found.";
             case 500:
