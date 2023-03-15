@@ -3,9 +3,6 @@ import * as authController from '../core/Auth/AuthController.js'
 const authRouter = async (req, res) => {
 
     switch (req.method.toUpperCase()) {
-        // case 'GET':
-        //     getRouter(req, res);
-        //     break;
         case 'POST':
             postRouter(req, res);
             break;
@@ -28,6 +25,9 @@ const postRouter = (req, res) => {
             break;
         case "/auth/signup":
             authController.signUp(req, res);
+            break;
+        case "/auth/token/login":
+            authController.loginViaToken(req, res);
             break;
         default:
             res.sendError(404, req.url);

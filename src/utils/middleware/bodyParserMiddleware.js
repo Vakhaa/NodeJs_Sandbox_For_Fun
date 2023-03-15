@@ -42,7 +42,8 @@ export const bodyParserMiddleware = (req, res, next) => {
             body += chunk.toString();
         });
         req.on('end', () => {
-            req.body = JSON.parse(body);
+            if (body != '')
+                req.body = JSON.parse(body);
             next();
         });
 

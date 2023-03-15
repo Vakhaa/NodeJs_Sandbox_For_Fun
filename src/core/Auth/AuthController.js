@@ -6,7 +6,7 @@ let users = [
     // {
     //     id,
     //     fullname,
-    //     email,
+    //     username,
     //     password,
     //     refreshToken
     // }
@@ -15,9 +15,9 @@ let users = [
 //post
 export async function login(req, res) {
     try {
-        let { email, password } = req.body;
+        let { username, password } = req.body;
 
-        let user = users.find(customer => (customer.email === email && bcrypt.compareSync(password, customer.password)));
+        let user = users.find(customer => (customer.username === username && bcrypt.compareSync(password, customer.password)));
         if (!user) return res.sendError(401, "/auth/login");
 
 
@@ -35,7 +35,7 @@ export async function login(req, res) {
 //post
 export async function signUp(req, res) {
     try {
-        let { fullname, email, password } = req.body;
+        let { fullname, username, password } = req.body;
 
         let userId = uuidv4();
         const accessToken = _generateAccessToken(userId);
@@ -46,7 +46,7 @@ export async function signUp(req, res) {
         let user = {
             id: userId,
             fullname,
-            email,
+            username,
             password: hashedPassword,
             refreshToken
         };
@@ -67,7 +67,7 @@ export async function logout(req, res) {
 
         users.forEach(customer => {
             if (customer.id != userId) return customer;
-            customer.refreshToken = null; ''
+            customer.refreshToken = null;
         })
 
         res.writeHead(200);
@@ -98,6 +98,34 @@ export async function toRefreshToken(req, res) {
         })
     } catch (error) {
         res.sendError(500, "POST /auth/token/refresh", "Sorry, something went wrong! Sign up is vaild!");
+    }
+}
+
+//post
+export async function loginViaToken(req, res) {
+    try {
+
+        let { token } = req.body;
+
+        if (!token)
+            throw new BaseError(http.STATUS_CODES[401], 401, true, "Who are you? 8D");
+
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, { userId }) => {
+            if (error)
+                throw new BaseError(http.STATUS_CODES[403], 403, true, "Token has been expired!");
+            let user = users.find(customer => customer.id === userId);
+            if (!user) return res.sendError(401, "/auth/token/login");
+
+            res.writeHead(200);
+            res.end(JSON.stringify({
+                user,
+                accessToken: token,
+                refreshToken: user.refreshToken
+            }));
+        })
+
+    } catch (error) {
+        res.sendError(500, "/auth/token/login");
     }
 }
 

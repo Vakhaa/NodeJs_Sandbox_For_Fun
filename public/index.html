@@ -2,6 +2,7 @@
 
 <head>
     <title>My Website</title>
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <style>
         *,
         html {
@@ -20,36 +21,794 @@
             height: 100%;
             position: relative;
             background-color: rgb(236, 152, 42);
-        }
-
-        .center {
-            width: 100%;
-            height: 50%;
-            margin: 0;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             color: white;
             font-family: "Trebuchet MS", Helvetica, sans-serif;
             text-align: center;
         }
 
         h1 {
-            font-size: 144px;
+            font-size: 64px;
+        }
+
+        h3 {
+            font-size: 32px;
         }
 
         p {
-            font-size: 64px;
+            font-size: 24px;
+        }
+
+        body>header {
+            position: absolute;
+            left: -5%;
+            top: 45%;
+            transform: rotate(270deg);
+        }
+
+        #navigation {
+            width: 100%;
+            height: calc(100vh - 95%);
+            padding-top: 25px;
+        }
+
+        nav {
+            width: fit-content;
+            text-decoration: unset;
+            text-align: center;
+            background-color: #ffffff80;
+            border-radius: 30px;
+            margin: 0 auto;
+        }
+
+        #navigation a {
+            padding: 5px 25px;
+            text-decoration: unset;
+        }
+
+        #navigation a:hover {
+            color: white;
+        }
+
+        main {
+            width: 100%;
+            height: calc(100vh - 10% - 100px);
+        }
+
+        #requests {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 60%;
+            margin: 25px auto;
+            padding: 25px;
+            border: 1px solid white;
+            border-radius: 30px;
+        }
+
+        #requests_header {
+            display: flex;
+            width: 100%;
+            height: fit-content;
+            border: 1px solid white;
+            border-radius: 30px;
+        }
+
+        #requests_header a,
+        #endpoints a {
+            flex: 1 1 25%;
+            color: white;
+            text-decoration: none;
+            width: 100%;
+            padding: 25px;
+        }
+
+        #requests_header a {
+            font-size: 36px;
+        }
+
+        #endpoints a {
+            font-size: 24px;
+        }
+
+        #requests_header a:hover,
+        #endpoints a:hover {
+            background-color: #ffffff80;
+            color: #ffffff80;
+            border-radius: 30px;
+        }
+
+        .active {
+            background-color: #ffffff80 !important;
+            color: rgb(236, 152, 42) !important;
+            border-radius: 30px;
+        }
+
+        #requests_body {
+            display: flex;
+            width: 100%;
+            margin-top: 25px;
+            height: 100%;
+        }
+
+        #endpoints {
+            display: flex;
+            flex: 1 1 20%;
+            flex-direction: column;
+            height: fit-content;
+        }
+
+        #json {
+            flex: 1 1 80%;
+            height: calc(100vh - 300px);
+            ;
+            width: 100%;
+            overflow: hidden;
+            margin-left: 55px;
+        }
+
+        #json div {
+            height: 100%;
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: inset 0px 0px 5px black;
+            overflow: overlay;
+            color: black;
+        }
+
+        #json pre {
+            border: unset;
+            white-space: break-spaces;
+            text-align: left;
+            padding-top: 15px;
+            padding-left: 5px;
+        }
+
+        #json button {
+            display: block;
+            margin: 0 auto;
+        }
+
+        #json input {
+            text-align: center;
+        }
+
+        #json input[type="number"] {
+            width: 10%;
         }
     </style>
 </head>
 
 <body>
-    <div class="center">
+    <header>
         <h1>Hello Again!</h1>
-        <p>This is served from a file</p>
-    </div>
+        <h3>This is served from a file</h3>
+    </header>
+
+    <section id="navigation">
+        <nav>
+            <a href="http://localhost:3000/login">Login</a>
+            <a href="http://localhost:3000/signup">Sign Up</a>
+        </nav>
+    </section>
+
+    <main id="content">
+        <p>
+            Without <a href="http://localhost:3000/login">authorization</a>, you can't make a requests!
+        </p>
+        <section id="requests">
+            <header id="requests_header">
+                <a href="#" id="get" class="active">GET</a>
+                <a href="#" id="post">POST</a>
+                <a href="#" id="put">PUT</a>
+                <a href="#" id="delete">DELETE</a>
+            </header>
+            <span id="requests_body">
+                <span id="endpoints">
+                    <!-- put the reauets button throw the js  -->
+                </span>
+                <span id="json">
+                    <div>
+                        <pre>
+
+                        </pre>
+                    </div>
+                </span>
+            </span>
+        </section>
+    </main>
+
+    <script>
+
+        // if accessToken? auth : refresh token
+        (function () {
+            // we should auth here with acces token, then
+            //true: take a user, and show meesage, hide navigation
+            //false: than try to refresh if token !expire!
+            let accessToken = window.sessionStorage.getItem("accessToken");
+            if (!accessToken) return;
+            const request = new XMLHttpRequest();
+
+            request.onload = function (event) {
+                let data = JSON.parse(request.response);
+                if (!data.error) {
+                    window.sessionStorage.setItem("user", JSON.stringify(data.user));
+                    window.sessionStorage.setItem("accessToken", data.accessToken);
+                    window.sessionStorage.setItem("refreshToken", data.refreshToken);
+                    insertMessageForAuthUser(data.user.fullname);
+                } else if (data.error.code === "Unauthorized") { // shadow auth failed
+                    window.sessionStorage.clear();
+                } else { // refresh
+                    let refreshToken = window.sessionStorage.getItem("refreshToken");
+                    if (!refreshToken) return;
+                    const req = new XMLHttpRequest();
+
+                    req.onload = function (event) {
+                        let data = JSON.parse(req.response);
+                        if (!data.error) {
+                            window.sessionStorage.setItem("accessToken", data.accessToken);
+                        } else {
+                            window.sessionStorage.clear();
+                        };
+
+                        insertMessageForAuthUser(data.user.fullname);
+                    };
+
+                    req.onerror = function (event) {
+                        let data = JSON.parse(req.response);
+                        console.log("onerror", data);
+                    };
+
+                    req.open("PUT", "http://localhost:3000/auth/token/refresh");
+
+                    req.setRequestHeader("Content-Type", "application/json");
+
+                    req.send(JSON.stringify({
+                        token: refreshToken
+                    }));
+                };
+            };
+
+            request.onerror = function (event) {
+                let data = JSON.parse(req.response);
+                console.log("onerror", data);
+            };
+
+            request.open("PoSt", "http://localhost:3000/auth/token/login");
+
+            request.setRequestHeader("Content-Type", "application/json");
+
+            request.send(JSON.stringify({
+                token: accessToken
+            }));
+        })();
+
+        //made get request a chosen
+        getRequests(document.querySelector("#endpoints"));
+
+        function insertMessageForAuthUser(fullname) {
+            let navigation = document.querySelector('#navigation');
+            navigation.style.setProperty("display", "none");
+
+            // replace text authorization (#content p)
+            const profile = document.querySelector('#content p');
+            const message = document.createTextNode(`${fullname}, you are authorized. `);
+            const a = document.createElement("a");
+            const aText = document.createTextNode("Logout?");
+            a.setAttribute("href", "#");
+            a.appendChild(aText)
+            profile.replaceChildren(message);
+            profile.appendChild(a);
+            profile.style.setProperty("margin-top", "25px");
+            // logout 
+            a.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const req = new XMLHttpRequest();
+
+                req.onload = function (event) {
+                    let data = JSON.parse(req.response);
+                    if (data.error) return alert("Failed");
+                    navigation.style.setProperty("display", "block");
+
+                    const contentP = document.querySelector('#content p');
+                    const messageStart = document.createTextNode("Without ");
+                    const messageEnd = document.createTextNode(", you can't make a requests!");
+
+                    const auth = document.createElement("a");
+                    const authText = document.createTextNode("authorization");
+                    auth.setAttribute("href", "http://localhost:3000/login");
+                    auth.appendChild(authText);
+                    contentP.replaceChildren(messageStart);
+                    contentP.appendChild(auth);
+                    contentP.appendChild(messageEnd);
+                    contentP.style.setProperty("margin-top", "unset");
+                    window.sessionStorage.clear();
+                };
+
+                req.onerror = function (event) {
+                    let data = JSON.parse(req.response);
+                    console.log("onerror", data);
+                };
+
+                req.open("DELETE", "http://localhost:3000/auth/logout");
+
+                req.setRequestHeader("Content-Type", "application/json");
+
+                req.send(JSON.stringify({
+                    userId: JSON.parse(window.sessionStorage.getItem('user')).id
+                }));
+            })
+        }
+
+        //fucntion below is helpers for requests
+        function insertResponse(data) {
+            let response = document.querySelector("#json div");
+            const p = document.createElement("pre");
+            p.classList.add("prettyprint");
+            let prettyJson = JSON.stringify(JSON.parse(data), null, 1);
+            const responseText = document.createTextNode(prettyJson);
+            p.innerText = prettyJson;
+            response.replaceChildren(p);
+        }
+
+        function insertUserFormForRequest(method, url, isUpdate) {
+
+            let jeson = document.querySelector("#json div");
+            jeson.replaceChildren();
+
+            let textStart = `{ `;
+            let textId = `   "id":"`;
+            let textName = `   "name":"`;
+            let textUsername = `   "username":"`;
+            let textEmail = `   "email":"`;
+            let textPhone = `   "phone":"`;
+            let textClosure = `",`;
+            let textEnd = `}`;
+            const prettyJsonStart = document.createTextNode(textStart);
+            const prettyJsonId = document.createTextNode(textId);
+            const prettyJsonName = document.createTextNode(textName);
+            const prettyJsonUsername = document.createTextNode(textUsername);
+            const prettyJsonEmail = document.createTextNode(textEmail);
+            const prettyJsonPhone = document.createTextNode(textPhone);
+            const prettyJsonEnd = document.createTextNode(textEnd);
+
+            let inputId = document.createElement('input');
+            inputId.setAttribute("type", "number");
+            inputId.setAttribute("placeholder", "id");
+            inputId.setAttribute("min", "0");
+            inputId.classList.add("id");
+
+            let inputName = document.createElement('input');
+            inputName.setAttribute("type", "text");
+            inputName.setAttribute("placeholder", "Taras Topola");
+            inputName.classList.add("name");
+
+            let inputUsername = document.createElement('input');
+            inputUsername.setAttribute("type", "text");
+            inputUsername.setAttribute("placeholder", "Subzero1988");
+            inputUsername.classList.add("username");
+
+            let inputEmail = document.createElement('input');
+            inputEmail.setAttribute("type", "text");
+            inputEmail.setAttribute("placeholder", "bigjoe@example.ua");
+            inputEmail.classList.add("email");
+
+            let inputPhone = document.createElement('input');
+            inputPhone.setAttribute("type", "text");
+            inputPhone.setAttribute("placeholder", "+380 000 000 000");
+            inputPhone.classList.add("phone");
+
+            const pre = document.createElement("pre");
+            pre.classList.add("prettyprint");
+
+            pre.appendChild(prettyJsonStart);
+            pre.appendChild(document.createElement('br'));
+            if (isUpdate) {
+                pre.appendChild(prettyJsonId);
+                pre.appendChild(inputId);
+                pre.appendChild(document.createTextNode(textClosure));
+                pre.appendChild(document.createElement('br'));
+            }
+            pre.appendChild(prettyJsonName);
+            pre.appendChild(inputName);
+            pre.appendChild(document.createTextNode(textClosure));
+            pre.appendChild(document.createElement('br'));
+
+            pre.appendChild(prettyJsonUsername);
+            pre.appendChild(inputUsername);
+            pre.appendChild(document.createTextNode(textClosure));
+            pre.appendChild(document.createElement('br'));
+
+            pre.appendChild(prettyJsonEmail);
+            pre.appendChild(inputEmail);
+            pre.appendChild(document.createTextNode(textClosure));
+            pre.appendChild(document.createElement('br'));
+
+            pre.appendChild(prettyJsonPhone);
+            pre.appendChild(inputPhone);
+            pre.appendChild(document.createTextNode(textClosure));
+            pre.appendChild(document.createElement('br'));
+
+            pre.appendChild(prettyJsonEnd);
+            const button = document.createElement("button");
+            pre.appendChild(button);
+            jeson.replaceChildren(pre);
+
+            button.innerText = "Send";
+            button.addEventListener("click", (event) => {
+                const req = new XMLHttpRequest();
+                let id = document.querySelector(".id");
+                let name = document.querySelector(".name");
+                let username = document.querySelector(".username");
+                let email = document.querySelector(".email");
+                let phone = document.querySelector(".phone");
+
+                //id is requried
+                if (isUpdate && id.value == '') {
+                    inputId.style.setProperty("border", "1px solid red");
+                    return;
+                }
+
+                req.open(method, url);
+
+                req.onload = function (event) {
+                    let data = req.response;
+                    if (data.error) return;
+                    insertResponse(data);
+                };
+
+                let accessToken = window.sessionStorage.getItem("accessToken");
+                req.setRequestHeader("Content-Type", "application/json");
+                req.setRequestHeader("Authorization", "Bearer " + accessToken);
+
+                if (isUpdate) {
+                    req.send(JSON.stringify({
+                        id: id.value,
+                        name: name.value,
+                        username: username.value,
+                        email: email.value,
+                        phone: phone.value,
+                    }));
+                } else {
+                    req.send(JSON.stringify({
+                        name: name.value,
+                        username: username.value,
+                        email: email.value,
+                        phone: phone.value,
+                    }));
+                }
+            });
+        }
+
+        function insertPostFormForRequest(method, url, isUpdate) {
+            let jeson = document.querySelector("#json div");
+            jeson.replaceChildren();
+
+            let textStart = `{ `;
+            let textId = `   "id":"`;
+            let textUserId = `   "userid":"`;
+            let textTitle = `   "title":"`;
+            let textBody = `   "body":"`;
+            let textClosure = `", `;
+            let textEnd = `}`;
+
+            const prettyJsonStart = document.createTextNode(textStart);
+            const prettyJsonId = document.createTextNode(textId);
+            const prettyJsonUserId = document.createTextNode(textUserId);
+            const prettyJsonTitle = document.createTextNode(textTitle);
+            const prettyJsonBody = document.createTextNode(textBody);
+            const prettyJsonClosure = document.createTextNode(textClosure);
+            const prettyJsonEnd = document.createTextNode(textEnd);
+
+            let inputId = document.createElement('input');
+            inputId.setAttribute("type", "number");
+            inputId.setAttribute("placeholder", "id");
+            inputId.setAttribute("min", "0");
+            inputId.classList.add("id");
+
+
+            let inputUserId = document.createElement('input');
+            inputUserId.setAttribute("type", "number");
+            inputUserId.setAttribute("placeholder", "id");
+            inputUserId.setAttribute("min", "0");
+            inputUserId.classList.add("userid");
+
+
+            let inputTitle = document.createElement('input');
+            inputTitle.setAttribute("type", "text");
+            inputTitle.setAttribute("placeholder", "Shadows of Forgotten Ancestors");
+            inputTitle.classList.add("title");
+
+            let inputBody = document.createElement('textarea');
+            inputBody.setAttribute("rows", "5");
+            inputBody.setAttribute("cols", "33");
+            inputBody.setAttribute("placeholder", "bigjoe@example.ua");
+            inputBody.classList.add("body");
+            inputBody.style.setProperty("resize", "none");
+            inputBody.style.setProperty("background-color", "rgba(80, 80, 80, 0.244)");
+            inputBody.innerText = "It was a dark and stormy night...";
+
+            const pre = document.createElement("pre");
+            pre.classList.add("prettyprint");
+
+            pre.appendChild(prettyJsonStart);
+            pre.appendChild(document.createElement('br'));
+            if (isUpdate) {
+                pre.appendChild(prettyJsonId);
+                pre.appendChild(inputId);
+                pre.appendChild(document.createTextNode(textClosure));
+                pre.appendChild(document.createElement('br'));
+            }
+            pre.appendChild(prettyJsonUserId);
+            pre.appendChild(inputUserId);
+            pre.appendChild(document.createTextNode(textClosure));
+            pre.appendChild(document.createElement('br'));
+
+            pre.appendChild(prettyJsonTitle);
+            pre.appendChild(inputTitle);
+            pre.appendChild(document.createTextNode(textClosure));
+            pre.appendChild(document.createElement('br'));
+
+            pre.appendChild(prettyJsonBody);
+            pre.appendChild(inputBody);
+            pre.appendChild(document.createTextNode(textClosure));
+            pre.appendChild(document.createElement('br'));
+
+            pre.appendChild(prettyJsonEnd);
+            const button = document.createElement("button");
+            pre.appendChild(button);
+            jeson.replaceChildren(pre);
+
+            button.innerText = "Send";
+            button.addEventListener("click", (event) => {
+                const req = new XMLHttpRequest();
+                let id = document.querySelector(".id");
+                let userId = document.querySelector(".userid");
+                let title = document.querySelector(".title");
+                let body = document.querySelector(".body");
+
+                //id is requried
+                if (isUpdate && id.value == '') {
+                    inputId.style.setProperty("border", "1px solid red");
+                    return;
+                }
+
+                req.open(method, url);
+
+                req.onload = function (event) {
+                    let data = req.response;
+                    if (data.error) return;
+                    insertResponse(data);
+                };
+
+                let accessToken = window.sessionStorage.getItem("accessToken");
+                req.setRequestHeader("Content-Type", "application/json");
+                req.setRequestHeader("Authorization", "Bearer " + accessToken);
+
+                if (isUpdate) {
+                    req.send(JSON.stringify({
+                        id: id.value,
+                        userId: userId.value,
+                        title: title.value,
+                        body: body.value,
+                    }));
+                } else {
+                    req.send(JSON.stringify({
+                        userId: userId.value,
+                        title: title.value,
+                        body: body.value,
+                    }));
+                }
+            });
+        }
+
+        function insertFormIdForRequest(method, url) {
+            let jeson = document.querySelector("#json div");
+            jeson.replaceChildren();
+
+            let textStart = `{\n    "id": "`;
+            let textEnd = `",\n}`;
+            const prettyJsonStart = document.createTextNode(textStart);
+            const prettyJsonEnd = document.createTextNode(textEnd);
+
+            let input = document.createElement('input');
+            input.setAttribute("type", "number");
+            input.setAttribute("placeholder", "id");
+            input.setAttribute("min", "0");
+            input.classList.add("id");
+
+            const pre = document.createElement("pre");
+            pre.classList.add("prettyprint");
+            pre.appendChild(prettyJsonStart);
+            pre.appendChild(input);
+            pre.appendChild(prettyJsonEnd);
+            const button = document.createElement("button");
+            pre.appendChild(button);
+
+            jeson.replaceChildren(pre);
+
+            button.innerText = "Send";
+            button.addEventListener("click", (event) => {
+                const req = new XMLHttpRequest();
+                let input = document.querySelector(".id");
+
+                //id is requried
+                if (input.value == '') {
+                    input.style.setProperty("border", "1px solid red");
+                    return;
+                }
+
+                req.open(method, `${url}?id=${input.value.toString()}`);
+
+                req.onload = function (event) {
+                    let data = req.response;
+                    if (data.error) return;
+                    insertResponse(data);
+                };
+
+                let accessToken = window.sessionStorage.getItem("accessToken");
+                req.setRequestHeader("Content-Type", "application/json");
+                req.setRequestHeader("Authorization", "Bearer " + accessToken);
+
+                req.send();
+            });
+        }
+
+        function getUsers() {
+            const req = new XMLHttpRequest();
+            req.open("get", "http://localhost:3000/jsonplaceholder/users");
+            req.onload = function (event) {
+                let data = req.response;
+                if (data.error) return;
+                insertResponse(data);
+            };
+
+            let accessToken = window.sessionStorage.getItem("accessToken");
+            req.setRequestHeader("Content-Type", "application/json");
+            req.setRequestHeader("Authorization", "Bearer " + accessToken);
+
+            req.send();
+        }
+
+        function getPosts() {
+            const req = new XMLHttpRequest();
+            req.open("get", "http://localhost:3000/jsonplaceholder/posts");
+            req.onload = function (event) {
+                let data = req.response;
+                if (data.error) return;
+                insertResponse(data);
+            };
+
+            let accessToken = window.sessionStorage.getItem("accessToken");
+            req.setRequestHeader("Content-Type", "application/json");
+            req.setRequestHeader("Authorization", "Bearer " + accessToken);
+
+            req.send();
+        }
+
+        // actually - the requests
+        function getRequests(endpoints) {
+            const users = document.createElement("a");
+            const usersContetnt = document.createTextNode("users");
+            users.appendChild(usersContetnt);
+            users.addEventListener('click', getUsers);
+            users.setAttribute("href", "#");
+            endpoints.appendChild(users);
+
+            const user = document.createElement("a");
+            const userContetnt = document.createTextNode("user");
+            user.appendChild(userContetnt);
+            user.addEventListener('click', () => { insertFormIdForRequest("get", "http://localhost:3000/jsonplaceholder/users") });
+            user.setAttribute("href", "#");
+            endpoints.appendChild(user);
+
+
+            const posts = document.createElement("a");
+            const postsContetnt = document.createTextNode("posts");
+            posts.appendChild(postsContetnt);
+            posts.addEventListener('click', getPosts);
+            posts.setAttribute("href", "#");
+            endpoints.appendChild(posts);
+
+            const post = document.createElement("a");
+            const postContetnt = document.createTextNode("post");
+            post.appendChild(postContetnt);
+            post.addEventListener('click', () => { insertFormIdForRequest("get", "http://localhost:3000/jsonplaceholder/posts") });
+            post.setAttribute("href", "#");
+            endpoints.appendChild(post);
+        }
+
+        function deleteRequests(endpoints) {
+
+            const user = document.createElement("a");
+            const userContetnt = document.createTextNode("user");
+            user.appendChild(userContetnt);
+            user.addEventListener('click', () => { insertFormIdForRequest("delete", "http://localhost:3000/jsonplaceholder/users") });
+            user.setAttribute("href", "#");
+            endpoints.appendChild(user);
+
+            const post = document.createElement("a");
+            const postContetnt = document.createTextNode("post");
+            post.appendChild(postContetnt);
+            post.addEventListener('click', () => { insertFormIdForRequest("delete", "http://localhost:3000/jsonplaceholder/posts") });
+            post.setAttribute("href", "#");
+            endpoints.appendChild(post);
+        }
+
+        function postRequests(endpoints) {
+            const user = document.createElement("a");
+            const userContetnt = document.createTextNode("user");
+            user.appendChild(userContetnt);
+            user.addEventListener('click', () => { insertUserFormForRequest("post", "http://localhost:3000/jsonplaceholder/users", false) });
+            user.setAttribute("href", "#");
+            endpoints.appendChild(user);
+
+            const post = document.createElement("a");
+            const postContetnt = document.createTextNode("post");
+            post.appendChild(postContetnt);
+            post.addEventListener('click', () => { insertPostFormForRequest("post", "http://localhost:3000/jsonplaceholder/posts", false) });
+            post.setAttribute("href", "#");
+            endpoints.appendChild(post);
+        }
+
+        function putRequests(endpoints) {
+            const user = document.createElement("a");
+            const userContetnt = document.createTextNode("user");
+            user.appendChild(userContetnt);
+            user.addEventListener('click', () => { insertUserFormForRequest("put", "http://localhost:3000/jsonplaceholder/users", true) });
+            user.setAttribute("href", "#");
+            endpoints.appendChild(user);
+
+            const post = document.createElement("a");
+            const postContetnt = document.createTextNode("post");
+            post.appendChild(postContetnt);
+            post.addEventListener('click', () => { insertPostFormForRequest("put", "http://localhost:3000/jsonplaceholder/posts", true) });
+            post.setAttribute("href", "#");
+            endpoints.appendChild(post);
+        }
+
+        // added request buttons for requests methods
+        (function () {
+            let accessToken = window.sessionStorage.getItem("accessToken");
+            if (!accessToken) {
+                //block request buttons
+                // or not maybe better show 401
+                alert("Permission denied!");
+                return;
+            };
+
+            let buttons = document.querySelectorAll('#requests_header a');
+            for (const button of buttons) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    let method = event.currentTarget.text.toLowerCase().trim();
+
+                    buttons.forEach(item => item.classList.remove("active"));
+                    button.classList.add("active");
+
+                    const endpoints = document.querySelector("#endpoints");
+                    endpoints.replaceChildren();
+                    document.querySelector("#json pre").replaceChildren();
+
+                    switch (method) {
+                        case "get":
+                            getRequests(endpoints);
+                            break;
+                        case "post":
+                            postRequests(endpoints);
+                            break;
+                        case "put":
+                            putRequests(endpoints);
+                            break;
+                        case "delete":
+                            deleteRequests(endpoints);
+                            break;
+                    }
+                })
+            }
+        })();
+
+    </script>
 </body>
 
 </html>
