@@ -1,3 +1,5 @@
 /node_modules
 .env
 *.log
+cleanLog.js
+prod.ecosystem.config.cjs
