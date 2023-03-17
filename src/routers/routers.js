@@ -38,7 +38,7 @@ const routersWithMiddlewareBasedOnPromisesChain = async (req, res, middlewares) 
 
 
 const routers = async (req, res) => {
-    try { // we need handle error into setImmediate
+    try {
         switch (true) {
             case req.url.includes("jsonplaceholder"):
                 authenticateTokenMiddleware(req, res, () => {
@@ -52,8 +52,9 @@ const routers = async (req, res) => {
                 otherRouter(req, res);
                 break;
         }
-    } catch (error) {
-        console.error("setImmediate handler error", error);
+    } catch (error) {// we need handle error into setImmediate
+        req.profiler.done({ message: 'routers crush', level: 'debug' });
+        req.logger.error("setImmediate handler error", error);
         res.writeHead(error.statusCode);
         res.end(`{"error":{"code":"${error.name}", "message":"${error.message}"}}`);
     }

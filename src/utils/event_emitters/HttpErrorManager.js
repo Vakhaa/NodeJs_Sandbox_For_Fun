@@ -14,16 +14,16 @@ class HttpErrorManager extends EventEmitter {
         let date = new Date(Date.now());
         let description = message || this._getErrorMessage(code);
 
-        this._logError(code, path, date, message);
+        // this._logError(code, path, date, message);
 
         this.emit("error", new BaseError(http.STATUS_CODES[code], code, true, description));
     }
 
-    _logError(code, path, date, message) {
-        console.log(`Error: ${code} (${date.toUTCString()})`);
-        console.log(`Path: ${path}`);
-        if (message != "without message" && message) console.log(message);
-    }
+    // _logError(code, path, date, message) {
+    //     console.log(`Error: ${code} (${date.toUTCString()})`);
+    //     console.log(`Path: ${path}`);
+    //     if (message != "without message" && message) console.log(message);
+    // }
 
     _getErrorMessage = (code) => {
         switch (code) {

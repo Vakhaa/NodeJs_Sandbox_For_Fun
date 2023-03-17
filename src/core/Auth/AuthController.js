@@ -27,6 +27,8 @@ export async function login(req, res) {
         user.refreshToken = refreshToken;
 
         res.writeHead(200);
+        req.profiler.done({ message: `Send  ${req.method} response`, level: 'debug' });
+        req.logger.http({ message: `${req.url}`, userId: user.id });
         res.end(JSON.stringify({ userId: user.id, accessToken, refreshToken }));
     } catch (error) {
         res.sendError(500, "/auth/login");
@@ -54,6 +56,8 @@ export async function signUp(req, res) {
         users.push(user);
 
         res.writeHead(200);
+        req.profiler.done({ message: `Send  ${req.method} response`, level: 'debug' });
+        req.logger.http({ message: `${req.url}`, userId });
         res.end(JSON.stringify({ userId: user.id, accessToken, refreshToken }));
 
     } catch (error) {
@@ -71,6 +75,8 @@ export async function logout(req, res) {
         })
 
         res.writeHead(200);
+        req.profiler.done({ message: `Send  ${req.method} response`, level: 'debug' });
+        req.logger.http({ message: `${req.url}`, userId });
         res.end(JSON.stringify({
             message: "logout"
         }));
@@ -94,6 +100,8 @@ export async function toRefreshToken(req, res) {
             if (error) return res.sendError(401, "POST /auth/token/refresh");
             const accessToken = _generateAccessToken(userId);
             res.writeHead(200);
+            req.profiler.done({ message: `Send  ${req.method} response`, level: 'debug' });
+            req.logger.http({ message: `${req.url}`, userId });
             res.end(JSON.stringify({ userId, accessToken }));
         })
     } catch (error) {
@@ -117,6 +125,8 @@ export async function loginViaToken(req, res) {
             if (!user) return res.sendError(401, "/auth/token/login");
 
             res.writeHead(200);
+            req.profiler.done({ message: `Send  ${req.method} response`, level: 'debug' });
+            req.logger.http({ message: `${req.url}`, userId });
             res.end(JSON.stringify({
                 user,
                 accessToken: token,

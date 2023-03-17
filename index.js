@@ -5,28 +5,18 @@ import routers from './src/routers/routers.js';
 import { parseUrlParamsMiddleware } from './src/utils/middleware/parseUrlParamsMiddleware.js'
 import { httpErrorMiddleware } from './src/utils/middleware/httpErrorMiddleware.js'
 import { bodyParserMiddleware } from './src/utils/middleware/bodyParserMiddleware.js'
-import { isOperationalError } from './src/infrastructure/BaseError.js';
+import { v4 as uuidv4 } from 'uuid';
+import {config as loggerConfig} from './src/utils/logger.js';
+const logger = loggerConfig();
 
 // made my own 'middleware'
 const server = http.createServer((req, res) => {
+    req.logger = logger.child({ requestId: uuidv4(), methodHttp: req.method.toUpperCase() });
+    req.profiler = req.logger.startTimer();
+    // req.requestId = uuidv4();
     routers(req, res, [httpErrorMiddleware, parseUrlParamsMiddleware, bodyParserMiddleware]);
 });
 
 server.listen(process.env.PORT, process.env.HOST, () => {
-
-    // if the Promise is rejected this will catch it
-    process.on('unhandledRejection', error => {
-        throw error;
-    })
-
-    process.on('uncaughtException', error => {
-
-        console.error("uncaughtException", error);
-
-        if (!isOperationalError(error)) {
-            process.exit(1);
-        }
-    })
-
-    console.log(`Server is running on http://${process.env.HOST}:${process.env.PORT}`);
+    logger.info(`Server is running on http://${process.env.HOST}:${process.env.PORT}`);
 });

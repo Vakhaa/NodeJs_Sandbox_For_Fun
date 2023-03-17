@@ -31,6 +31,8 @@ const sayHello = async (req, res) => {
         let html = await fs.readFile(process.cwd() + "/public/index.html");
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
+        req.profiler.done({ message: `Send response`, level: 'debug' });
+        req.logger.http({ message: `Send html: ${req.url}` });
         res.end(html);
     } catch (error) {
         res.sendError(500, req.url);
@@ -42,6 +44,8 @@ const login = async (req, res) => {
         let html = await fs.readFile(process.cwd() + "/public/login.html");
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
+        req.profiler.done({ message: `Send response`, level: 'debug' });
+        req.logger.http({ message: `Send html: ${req.url}` });
         res.end(html);
     } catch (error) {
         res.sendError(500, req.url);
@@ -53,6 +57,8 @@ const signup = async (req, res) => {
         let html = await fs.readFile(process.cwd() + "/public/signup.html");
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
+        req.profiler.done({ message: `Send response`, level: 'debug' });
+        req.logger.http({ message: `Send html: ${req.url}` });
         res.end(html);
     } catch (error) {
         res.sendError(500, req.url);
@@ -64,6 +70,8 @@ const notfound = async (req, res) => {
         let html = await fs.readFile(process.cwd() + "/public/404.html");
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
+        req.profiler.done({ message: `Send response`, level: 'debug' });
+        req.logger.http({ message: `Send html: not found, url: ${req.url}` });
         res.end(html);
     } catch (error) {
         res.sendError(500, req.url);

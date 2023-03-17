@@ -19,6 +19,8 @@ export async function getAll(req, res) {
     const data = await jsonClient.get();
 
     res.writeHead(200);
+    req.profiler.done({ message: `Send ${req.method} response`, level: 'debug' });
+    req.logger.http({ message: `${req.url}`, userId: req.userId });
     res.end(JSON.stringify(data));
 }
 
@@ -29,6 +31,8 @@ export async function getOne(req, res) {
     const data = await jsonClient.get(id);
 
     res.writeHead(200);
+    req.profiler.done({ message: `Send ${req.method} response`, level: 'debug' });
+    req.logger.http({ message: `${req.url}`, userId: req.userId });
     res.end(JSON.stringify(data));
 }
 
@@ -49,6 +53,8 @@ export async function create(req, res) {
     });
 
     res.writeHead(200);
+    req.profiler.done({ message: `Send ${req.method} response`, level: 'debug' });
+    req.logger.http({ message: `${req.url}`, userId: req.userId });
     res.end(JSON.stringify(data));
 }
 
@@ -70,6 +76,8 @@ export async function update(req, res) {
     });
 
     res.writeHead(200);
+    req.profiler.done({ message: `Send ${req.method} response`, level: 'debug' });
+    req.logger.http({ message: `${req.url}`, userId: req.userId });
     res.end(JSON.stringify(data));
 }
 
@@ -79,5 +87,7 @@ export async function remove(req, res) {
     const data = await jsonClient.delete(id);
 
     res.writeHead(200);
+    req.profiler.done({ message: `Send ${req.method} response`, level: 'debug' });
+    req.logger.http({ message: `${req.url}`, userId: req.userId });
     res.end(JSON.stringify(data));
 }

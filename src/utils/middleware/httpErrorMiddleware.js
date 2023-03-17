@@ -33,12 +33,12 @@ export const httpErrorMiddleware = (req, res, next) => {
         const httpErrorManager = new HttpErrorManager();
 
         res.sendError = function (code, path, message) {
+            req.profiler.done({ message: `${path}: ${message}`, level: 'debug' });
             httpErrorManager.error(code, path, message);
         }
 
         httpErrorManager.on("error", (error => {
             res.setHeader("Content-Type", "application/json");
-
             res.writeHead(error.statusCode);
             res.end(`{"error":{"code":"${error.name}", "message":"${error.message}"}}`);
         }))
