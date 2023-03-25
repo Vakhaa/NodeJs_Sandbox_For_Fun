@@ -46,6 +46,10 @@ export const bodyParserMiddleware = (req, res, next) => {
                 req.body = JSON.parse(body);
             next();
         });
+        req.on('error', (error) => {
+            req.logger.error("bodyParserMiddleware", error);
+            throw new BaseError(http.STATUS_CODES[500], error.code, true, error.message);
+        })
 
     } catch (error) {
         throw new BaseError(http.STATUS_CODES[500], error.code, true, error.message);

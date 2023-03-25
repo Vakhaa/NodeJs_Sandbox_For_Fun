@@ -1,5 +1,7 @@
-import * as fs from 'node:fs/promises';
+import * as fs from 'node:fs';
+import { pipeline } from 'stream/promises';
 
+// change from thre readFile, to the streams and pipe
 const otherRouter = async (req, res) => {
 
     if (req.method.toUpperCase() === 'GET') {
@@ -28,53 +30,69 @@ const getRouter = (req, res) => {
 
 const sayHello = async (req, res) => {
     try {
-        let html = await fs.readFile(process.cwd() + "/public/index.html");
+        let readStream = fs.createReadStream(process.cwd() + "/public/index.html");
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
         req.profiler.done({ message: `Send response`, level: 'debug' });
         req.logger.http({ message: `Send html: ${req.url}` });
-        res.end(html);
-    } catch (error) {
-        res.sendError(500, req.url);
+
+        await pipeline(
+            readStream,
+            res,
+        );
+    } catch (err) {
+        req.logger.error(err);
     }
 }
 
 const login = async (req, res) => {
     try {
-        let html = await fs.readFile(process.cwd() + "/public/login.html");
+        let readStream = fs.createReadStream(process.cwd() + "/public/login.html");
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
         req.profiler.done({ message: `Send response`, level: 'debug' });
         req.logger.http({ message: `Send html: ${req.url}` });
-        res.end(html);
+
+        await pipeline(
+            readStream,
+            res,
+        );
     } catch (error) {
-        res.sendError(500, req.url);
+        req.logger.error(err);
     }
 }
 
 const signup = async (req, res) => {
     try {
-        let html = await fs.readFile(process.cwd() + "/public/signup.html");
+        let readStream = fs.createReadStream(process.cwd() + "/public/signup.html");
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
         req.profiler.done({ message: `Send response`, level: 'debug' });
         req.logger.http({ message: `Send html: ${req.url}` });
-        res.end(html);
+
+        await pipeline(
+            readStream,
+            res,
+        );
     } catch (error) {
-        res.sendError(500, req.url);
+        req.logger.error(err);
     }
 }
 
 const notfound = async (req, res) => {
     try {
-        let html = await fs.readFile(process.cwd() + "/public/404.html");
+        let readStream = fs.createReadStream(process.cwd() + "/public/404.html");
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
         req.profiler.done({ message: `Send response`, level: 'debug' });
         req.logger.http({ message: `Send html: not found, url: ${req.url}` });
-        res.end(html);
+
+        await pipeline(
+            readStream,
+            res,
+        );
     } catch (error) {
-        res.sendError(500, req.url);
+        req.logger.error(err);
     }
 }
 
