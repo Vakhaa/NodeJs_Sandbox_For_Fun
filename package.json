@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pm2 start dev.ecosystem.config.cjs --watch=true",
     "prod": "pm2 start prod.ecosystem.config.cjs --attach",
+    "debug": "node --inspect-brk index.js",
     "clean-log": "node cleanLog.js"
   },
   "author": "Denys Vynohradnyi",

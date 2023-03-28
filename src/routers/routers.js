@@ -12,9 +12,9 @@ const routersWithMiddleware = async (req, res, middlewares) => {
         middlewares.reduceRight((prev, current, index) => {
 
             if (index == middlewares.length - 2) {
-                return current.bind(this, req, res, prev.bind(this, req, res, routers.bind(null, req, res)));
+                return current.bind(null, req, res, prev.bind(null, req, res, routers.bind(null, req, res)));
             } else {
-                return current.bind(this, req, res, prev);
+                return current.bind(null, req, res, prev);
             }
         })();
     });
