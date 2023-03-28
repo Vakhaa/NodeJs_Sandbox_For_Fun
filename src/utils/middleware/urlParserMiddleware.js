@@ -1,5 +1,5 @@
-import BaseError from "../../infrastructure/BaseError.js";
 import * as http from 'http';
+import BaseError from "../../infrastructure/BaseError.js";
 
 
 export const parseUrlParamsPromisesMiddleware = ({ req, res }) => {
@@ -60,6 +60,24 @@ export const parseUrlParamsMiddleware = (req, res, next) => {
         }
 
         req.params = params;
+        next();
+    } catch (error) {
+        throw new BaseError(http.STATUS_CODES[500], error.code, true, error.message);
+    }
+}
+
+//Right version
+export const urlParserMiddleware = (req, res, next) => {
+    
+    let isParams = /\?/.test(req.url);
+    if (!isParams) return next();
+    
+    try {
+        const myURL = new URL(req.url, `http://${req.headers.host}/`)
+
+        req.urlWithoutParam = myURL.pathname;
+        
+        req.params = myURL.searchParams;
         next();
     } catch (error) {
         throw new BaseError(http.STATUS_CODES[500], error.code, true, error.message);
