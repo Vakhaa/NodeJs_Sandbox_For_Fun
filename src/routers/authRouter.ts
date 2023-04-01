@@ -1,6 +1,8 @@
+import IRequest from 'src/infrastructure/interfaces/IRequest.js';
 import * as authController from '../core/Auth/AuthController.js'
+import IResponse from 'src/infrastructure/interfaces/IResponse.js';
 
-const authRouter = async (req, res) => {
+const authRouter = async (req: IRequest, res: IResponse) => {
 
     switch (req.method.toUpperCase()) {
         case 'POST':
@@ -18,7 +20,7 @@ const authRouter = async (req, res) => {
 }
 
 
-const postRouter = (req, res) => {
+const postRouter = (req: IRequest, res: IResponse) => {
     switch (req.urlWithoutParam || req.url) {
         case "/auth/login":
             authController.login(req, res);
@@ -35,7 +37,7 @@ const postRouter = (req, res) => {
     }
 }
 
-const putRouter = (req, res) => {
+const putRouter = (req: IRequest, res: IResponse) => {
     switch (req.urlWithoutParam || req.url) {
         case "/auth/token/refresh":
             authController.toRefreshToken(req, res);
@@ -46,7 +48,7 @@ const putRouter = (req, res) => {
     }
 }
 
-const deleteRouter = (req, res) => {
+const deleteRouter = (req: IRequest, res: IResponse) => {
     switch (req.urlWithoutParam || req.url) {
         case "/auth/logout":
             authController.logout(req, res);

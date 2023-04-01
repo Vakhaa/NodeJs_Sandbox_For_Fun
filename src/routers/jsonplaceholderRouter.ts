@@ -1,7 +1,9 @@
-import * as usersController from '../core/jsonplaceholder/usersController.js'
-import * as postsController from '../core/jsonplaceholder/postsController.js'
+import * as usersController from '../core/JSONPlaceholder/user/UsersController.js'
+import * as postsController from '../core/JSONPlaceholder/post/PostsController.js'
+import IRequest from 'src/infrastructure/interfaces/IRequest.js';
+import IResponse from 'src/infrastructure/interfaces/IResponse.js';
 
-const jsonplaceholderRouter = async (req, res) => {
+const jsonplaceholderRouter = async (req: IRequest, res: IResponse) => {
 
     switch (req.method.toUpperCase()) {
         case 'GET':
@@ -21,7 +23,7 @@ const jsonplaceholderRouter = async (req, res) => {
 
 }
 
-const getRouter = (req, res) => {
+const getRouter = (req: IRequest, res: IResponse) => {
     switch (req.urlWithoutParam || req.url) {
         case "/jsonplaceholder/users":
             if (!req.params)
@@ -42,7 +44,7 @@ const getRouter = (req, res) => {
 }
 
 
-const postRouter = (req, res) => {
+const postRouter = (req: IRequest, res: IResponse) => {
     switch (req.urlWithoutParam || req.url) {
         case "/jsonplaceholder/users":
             usersController.create(req, res);
@@ -56,7 +58,7 @@ const postRouter = (req, res) => {
     }
 }
 
-const putRouter = (req, res) => {
+const putRouter = (req: IRequest, res: IResponse) => {
     switch (req.urlWithoutParam || req.url) {
         case "/jsonplaceholder/users":
             usersController.update(req, res);
@@ -70,7 +72,7 @@ const putRouter = (req, res) => {
     }
 }
 
-const deleteRouter = (req, res) => {
+const deleteRouter = (req: IRequest, res: IResponse) => {
     switch (req.urlWithoutParam || req.url) {
         case "/jsonplaceholder/users":
             usersController.remove(req, res);

@@ -9,7 +9,7 @@ class HttpErrorManager extends EventEmitter {
         super();
     }
 
-    error(code, path, message) {
+    error(code: number, message: string) {
 
         let date = new Date(Date.now());
         let description = message || this._getErrorMessage(code);
@@ -25,7 +25,7 @@ class HttpErrorManager extends EventEmitter {
     //     if (message != "without message" && message) console.log(message);
     // }
 
-    _getErrorMessage = (code) => {
+    _getErrorMessage = (code: number): string => {
         switch (code) {
             case 401:
                 return "Who are you? 8D";

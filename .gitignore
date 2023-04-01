@@ -2,5 +2,7 @@
 .vscode
 .env
 *.log
-cleanLog.js
+build
 prod.ecosystem.config.cjs
+prisma
+prisma.ts

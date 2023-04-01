@@ -1,8 +1,10 @@
 import * as fs from 'node:fs';
+import IRequest from 'src/infrastructure/interfaces/IRequest.js';
+import IResponse from 'src/infrastructure/interfaces/IResponse.js';
 import { pipeline } from 'stream/promises';
 
 // change from thre readFile, to the streams and pipe
-const otherRouter = async (req, res) => {
+const otherRouter = async (req: IRequest, res: IResponse) => {
 
     if (req.method.toUpperCase() === 'GET') {
         getRouter(req, res);
@@ -10,7 +12,7 @@ const otherRouter = async (req, res) => {
 
 }
 
-const getRouter = (req, res) => {
+const getRouter = (req: IRequest, res: IResponse) => {
     switch (req.urlWithoutParam || req.url) {
         case "/":
         case "/home":
@@ -28,7 +30,7 @@ const getRouter = (req, res) => {
     }
 }
 
-const sayHello = async (req, res) => {
+const sayHello = async (req: IRequest, res: IResponse) => {
     try {
         let readStream = fs.createReadStream(process.cwd() + "/public/index.html");
         res.setHeader("Content-Type", "text/html");
@@ -40,12 +42,12 @@ const sayHello = async (req, res) => {
             readStream,
             res,
         );
-    } catch (err) {
-        req.logger.error(err);
+    } catch (error) {
+        req.logger.error(error);
     }
 }
 
-const login = async (req, res) => {
+const login = async (req: IRequest, res: IResponse) => {
     try {
         let readStream = fs.createReadStream(process.cwd() + "/public/login.html");
         res.setHeader("Content-Type", "text/html");
@@ -58,11 +60,11 @@ const login = async (req, res) => {
             res,
         );
     } catch (error) {
-        req.logger.error(err);
+        req.logger.error(error);
     }
 }
 
-const signup = async (req, res) => {
+const signup = async (req: IRequest, res: IResponse) => {
     try {
         let readStream = fs.createReadStream(process.cwd() + "/public/signup.html");
         res.setHeader("Content-Type", "text/html");
@@ -75,11 +77,11 @@ const signup = async (req, res) => {
             res,
         );
     } catch (error) {
-        req.logger.error(err);
+        req.logger.error(error);
     }
 }
 
-const notfound = async (req, res) => {
+const notfound = async (req: IRequest, res: IResponse) => {
     try {
         let readStream = fs.createReadStream(process.cwd() + "/public/404.html");
         res.setHeader("Content-Type", "text/html");
@@ -92,7 +94,7 @@ const notfound = async (req, res) => {
             res,
         );
     } catch (error) {
-        req.logger.error(err);
+        req.logger.error(error);
     }
 }
 

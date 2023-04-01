@@ -3,9 +3,12 @@ import authRouter from './authRouter.js'
 import otherRouter from './otherRouter.js'
 import * as http from 'http';
 import { authenticateTokenMiddleware } from '../utils/middleware/authenticateTokenMiddleware.js';
+import IRequest from 'src/infrastructure/interfaces/IRequest.js';
+import { TMiddleware } from 'src/infrastructure/types/TMiddleware.js';
+import IResponse from 'src/infrastructure/interfaces/IResponse.js';
 
 //v2  P.s.: I need a benchmark v1 vs v2
-const routersWithMiddleware = async (req, res, middlewares) => {
+const routersWithMiddleware = async (req: IRequest, res: IResponse, middlewares: TMiddleware[]) => {
     res.setHeader("Content-Type", "application/json");
 
     setImmediate(() => {
@@ -16,28 +19,11 @@ const routersWithMiddleware = async (req, res, middlewares) => {
             } else {
                 return current.bind(null, req, res, prev);
             }
-        })();
+        })(req, res, ()=>{});
     });
 }
 
-//v1
-const routersWithMiddlewareBasedOnPromisesChain = async (req, res, middlewares) => {
-    res.setHeader("Content-Type", "application/json");
-
-    var promise = middlewares[0]({ req, res });
-    for (var i = 1; i < middlewares.length; i++)
-        promise = promise.then(middlewares[i]);
-
-    promise.then(data => routers(data.req, data.res))
-        .catch(error => { //Middleware eror handler
-            console.error("middleware error", error);
-            res.writeHead(500);
-            res.end(`{"error":{"code":"${http.STATUS_CODES[500]}", "message":"Sorry, I need a moment, something went wrong!"}}`);
-        });
-}
-
-
-const routers = async (req, res) => {
+const routers = async (req: IRequest, res: IResponse) => {
     try {
         switch (true) {
             case req.url.includes("jsonplaceholder"):

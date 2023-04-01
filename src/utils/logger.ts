@@ -1,7 +1,8 @@
 import { isOperationalError } from '../infrastructure/BaseError.js';
 import winston from 'winston';
+// import { disconnectAsync as prismaDisconnectAsync} from './prisma.js';
 
-const { combine, timestamp, json, errors, colorize, prettyPrint } = winston.format;
+const { combine, timestamp, json, errors, colorize } = winston.format; //prettyPrint
 
 // const myFormat = winston.format.printf(({ level, message, timestamp }) => {
 //     return `${timestamp} ${level}: ${message}`;
@@ -30,10 +31,6 @@ export const config = () => {
                 level: 'http'
             }),
             new winston.transports.File({
-                filename: 'log/warning.log',
-                level: 'warn'
-            }),
-            new winston.transports.File({
                 filename: 'log/error.log',
                 level: 'error',
             }),
@@ -46,7 +43,10 @@ export const config = () => {
             new winston.transports.File({ filename: 'log/rejections.log' }),
             new winston.transports.Console({ consoleWarnLevels: ['error'] }),
         ],
-        exitOnError: (err) => !isOperationalError(err)
+        exitOnError: async (err) => {
+            // await prismaDisconnectAsync();
+            return !isOperationalError(err);
+        }
     });
 
     if (process.env.NODE_ENV !== 'production') {
