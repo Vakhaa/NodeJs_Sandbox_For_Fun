@@ -2,14 +2,15 @@
   "name": "nodejs_rest_sandbox",
   "version": "1.0.0",
   "description": "just for fun",
-  "main": "index.js",
+  "main": "build/index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsc && pm2 start dev.ecosystem.config.cjs --watch",
-    "prod": "pm2 start prod.ecosystem.config.cjs --attach",
+    "start": "npm run _prebuild && npx tsc && pm2 start dev.ecosystem.config.cjs --watch",
+    "prod": "npm run _prebuild && pm2 start prod.ecosystem.config.cjs --attach",
     "debug": "node --inspect-brk index.js",
-    "clean-log": "node scripts/cleanLog.js"
+    "clean-log": "node scripts/cleanLog.js",
+    "_prebuild": "rimraf build"
   },
   "author": "Denys Vynohradnyi",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "dotenv": "^16.0.3",
     "got": "^12.6.0",
     "jsonwebtoken": "^9.0.0",
+    "rimraf": "^4.4.1",
     "uuid": "^9.0.0",
     "winston": "^3.8.2"
   },

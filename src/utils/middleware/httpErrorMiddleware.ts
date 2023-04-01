@@ -4,7 +4,7 @@ import * as http from 'http';
 import IRequest from "src/infrastructure/interfaces/IRequest.js";
 import { TNext } from "src/infrastructure/types/TMiddlewareNext.js";
 import IResponse from "src/infrastructure/interfaces/IResponse.js";
-// import { disconnectAsync as prismaDisconnectAsync } from "../prisma.js";
+import { disconnectAsync as prismaDisconnectAsync } from "../prisma.js";
 
 export const httpErrorMiddleware = (req: IRequest, res: IResponse, next: TNext) => {
     try {
@@ -23,7 +23,7 @@ export const httpErrorMiddleware = (req: IRequest, res: IResponse, next: TNext) 
 
         // if the Promise is rejected this will catch it
         process.on('unhandledRejection', async (error) => {
-            // await prismaDisconnectAsync();
+            await prismaDisconnectAsync();
             throw error
         })
 

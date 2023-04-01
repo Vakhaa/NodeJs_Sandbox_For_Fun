@@ -218,7 +218,6 @@
     </main>
 
     <script>
-
         // if accessToken? auth : refresh token
         (function () {
             // we should auth here with acces token, then
@@ -234,7 +233,7 @@
                     window.sessionStorage.setItem("user", JSON.stringify(data.user));
                     window.sessionStorage.setItem("accessToken", data.accessToken);
                     window.sessionStorage.setItem("refreshToken", data.refreshToken);
-                    insertMessageForAuthUser(data.user.fullname);
+                    insertMessageForAuthUser(data.user.fullName);
                 } else if (data.error.code === "Unauthorized") { // shadow auth failed
                     window.sessionStorage.clear();
                 } else { // refresh
@@ -250,7 +249,7 @@
                             window.sessionStorage.clear();
                         };
 
-                        insertMessageForAuthUser(data.user.fullname);
+                        insertMessageForAuthUser(data.user.fullName);
                     };
 
                     req.onerror = function (event) {
@@ -453,8 +452,16 @@
 
                 req.onload = function (event) {
                     let data = req.response;
-                    if (data.error) return;
                     insertResponse(data);
+                };
+
+                req.onerror = req.onerror = function (event) {
+                    let data = JSON.parse(req.response);
+                    console.log("onerror", data);
+                    // insertResponse(data);
+                    setTimeout(function () {
+                        window.location.assign('http://localhost:3000/error');
+                    }, 500);
                 };
 
                 let accessToken = window.sessionStorage.getItem("accessToken");
@@ -577,8 +584,16 @@
 
                 req.onload = function (event) {
                     let data = req.response;
-                    if (data.error) return;
                     insertResponse(data);
+                };
+
+                req.onerror = req.onerror = function (event) {
+                    let data = JSON.parse(req.response);
+                    console.log("onerror", data);
+                    // insertResponse(data);
+                    setTimeout(function () {
+                        window.location.assign('http://localhost:3000/error');
+                    }, 500);
                 };
 
                 let accessToken = window.sessionStorage.getItem("accessToken");
@@ -642,8 +657,16 @@
 
                 req.onload = function (event) {
                     let data = req.response;
-                    if (data.error) return;
                     insertResponse(data);
+                };
+
+                req.onerror = req.onerror = function (event) {
+                    let data = JSON.parse(req.response);
+                    console.log("onerror", data);
+                    // insertResponse(data);
+                    setTimeout(function () {
+                        window.location.assign('http://localhost:3000/error');
+                    }, 500);
                 };
 
                 let accessToken = window.sessionStorage.getItem("accessToken");
@@ -659,8 +682,15 @@
             req.open("get", "http://localhost:3000/jsonplaceholder/users");
             req.onload = function (event) {
                 let data = req.response;
-                if (data.error) return;
                 insertResponse(data);
+            };
+            req.onerror = req.onerror = function (event) {
+                let data = JSON.parse(req.response);
+                console.log("onerror", data);
+                // insertResponse(data);
+                setTimeout(function () {
+                    window.location.assign('http://localhost:3000/error');
+                }, 500);
             };
 
             let accessToken = window.sessionStorage.getItem("accessToken");
@@ -675,8 +705,20 @@
             req.open("get", "http://localhost:3000/jsonplaceholder/posts");
             req.onload = function (event) {
                 let data = req.response;
-                if (data.error) return;
+                if (data.error) {
+                    setTimeout(function () {
+                        window.location.assign('http://localhost:3000/error');
+                    }, 500);
+                }
                 insertResponse(data);
+            };
+            req.onerror = req.onerror = function (event) {
+                let data = JSON.parse(req.response);
+                console.log("onerror", data);
+                // insertResponse(data);
+                setTimeout(function () {
+                    window.location.assign('http://localhost:3000/error');
+                }, 500);
             };
 
             let accessToken = window.sessionStorage.getItem("accessToken");

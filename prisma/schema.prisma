@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id           String  @id @default(cuid())
+  nickname     String  @unique
+  fullName     String
+  refreshToken String? @unique
+  password     String  @unique
+  requestId    String  @unique
+  request      Request @relation(fields: [requestId], references: [id])
+}
+
+model Request {
+  id        String      @id @default(cuid())
+  status    statusColor @default(GRAY)
+  get       Int         @default(0)
+  post      Int         @default(0)
+  put       Int         @default(0)
+  delete    Int         @default(0)
+  updatedAt DateTime    @updatedAt
+  owner     User?
+}
+
+enum statusColor {
+  GRAY
+  RED
+  BLUE
+  PURPLE
+  GOLD
+}

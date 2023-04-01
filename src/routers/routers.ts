@@ -7,7 +7,6 @@ import IRequest from 'src/infrastructure/interfaces/IRequest.js';
 import { TMiddleware } from 'src/infrastructure/types/TMiddleware.js';
 import IResponse from 'src/infrastructure/interfaces/IResponse.js';
 
-//v2  P.s.: I need a benchmark v1 vs v2
 const routersWithMiddleware = async (req: IRequest, res: IResponse, middlewares: TMiddleware[]) => {
     res.setHeader("Content-Type", "application/json");
 

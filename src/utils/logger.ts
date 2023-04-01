@@ -1,6 +1,6 @@
 import { isOperationalError } from '../infrastructure/BaseError.js';
 import winston from 'winston';
-// import { disconnectAsync as prismaDisconnectAsync} from './prisma.js';
+import { disconnectAsync as prismaDisconnectAsync} from './prisma.js';
 
 const { combine, timestamp, json, errors, colorize } = winston.format; //prettyPrint
 
@@ -44,7 +44,7 @@ export const config = () => {
             new winston.transports.Console({ consoleWarnLevels: ['error'] }),
         ],
         exitOnError: async (err) => {
-            // await prismaDisconnectAsync();
+            await prismaDisconnectAsync();
             return !isOperationalError(err);
         }
     });

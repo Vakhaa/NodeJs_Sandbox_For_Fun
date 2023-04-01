@@ -3,7 +3,6 @@ import IRequest from 'src/infrastructure/interfaces/IRequest.js';
 import IResponse from 'src/infrastructure/interfaces/IResponse.js';
 import { pipeline } from 'stream/promises';
 
-// change from thre readFile, to the streams and pipe
 const otherRouter = async (req: IRequest, res: IResponse) => {
 
     if (req.method.toUpperCase() === 'GET') {

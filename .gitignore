@@ -4,5 +4,3 @@
 *.log
 build
 prod.ecosystem.config.cjs
-prisma
-prisma.ts

@@ -1,26 +1,13 @@
 import jwt from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
-import { v4 as uuidv4 } from 'uuid';
-import BaseError from '../../infrastructure/BaseError.js';
-import * as http from 'node:http'
-import IRequest from 'src/infrastructure/interfaces/IRequest.js';
-import IResponse from 'src/infrastructure/interfaces/IResponse.js';
+import IRequest from '../../infrastructure/interfaces/IRequest.js';
+import IResponse from '../../infrastructure/interfaces/IResponse.js';
 import { LoginDto } from './dto/LoginDto.js';
 import { SignUpDto } from './dto/SignUpDto.js';
 import { LogoutDto } from './dto/LogoutDto.js';
 import { RefreshTokenDto } from './dto/RefreshTokenDto.js';
 import { AccessTokenDto } from './dto/AccessTokenDto.js';
-
-
-let users = [
-    // {
-    //     id,
-    //     fullname,
-    //     username,
-    //     password,
-    //     refreshToken
-    // }
-]
+import prisma from '../../utils/prisma.js';
 
 //post
 export async function login(req: IRequest, res: IResponse) {
@@ -29,14 +16,25 @@ export async function login(req: IRequest, res: IResponse) {
         if (!username || !password)
             return res.sendError(401, "POST /auth/login");
 
-        let user = users.find(customer => (customer.username === username && bcrypt.compareSync(password, customer.password)));
-        if (!user) return res.sendError(401, "POST /auth/login");
+        let user = await prisma.user.findUniqueOrThrow({
+            where: {
+                nickname: username
+            },
+        })
 
+        if (!bcrypt.compareSync(password, user.password)) return res.sendError(401, "POST /auth/login");
 
         let accessToken = _generateAccessToken(user.id);
         let refreshToken = jwt.sign({ userId: user.id }, process.env.REFRESH_TOKEN_SECRET);
 
-        user.refreshToken = refreshToken;
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                refreshToken
+            }
+        })
 
         res.writeHead(200);
         req.profiler.done({ message: `Send  ${req.method} response`, level: 'debug' });
@@ -53,25 +51,34 @@ export async function signUp(req: IRequest, res: IResponse) {
         if (!fullname || !username || !password)
             return res.sendError(500, "POST /auth/signUp", "Sorry, something went wrong! Sign up isn't vaild!");
 
-        let userId = uuidv4();
-        const accessToken = _generateAccessToken(userId);
-        const refreshToken = jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET);
-
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let user = {
-            id: userId,
-            fullname,
-            username,
-            password: hashedPassword,
-            refreshToken
-        };
+        let user = await prisma.user.create({
+            data: {
+                fullName: fullname,
+                nickname: username,
+                password: hashedPassword,
+                request: {
+                    create: {},
+                },
+            }
+        })
 
-        users.push(user);
+        const accessToken = _generateAccessToken(user.id);
+        const refreshToken = jwt.sign({ userId: user.id }, process.env.REFRESH_TOKEN_SECRET);
+
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                refreshToken
+            }
+        })
 
         res.writeHead(200);
         req.profiler.done({ message: `Send  ${req.method} response`, level: 'debug' });
-        req.logger.http({ message: `${req.url}`, userId });
+        req.logger.http({ message: `${req.url}`, userId: user.id });
         res.end(JSON.stringify({ userId: user.id, accessToken, refreshToken }));
 
     } catch (error) {
@@ -85,9 +92,13 @@ export async function logout(req: IRequest, res: IResponse) {
         if (!userId)
             return res.sendError(500, "DELETE /auth/logout")
 
-        users.forEach(customer => {
-            if (customer.id != userId) return customer;
-            customer.refreshToken = null;
+        await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                refreshToken: null
+            }
         })
 
         res.writeHead(200);
@@ -100,6 +111,7 @@ export async function logout(req: IRequest, res: IResponse) {
         res.sendError(500, "DELETE /auth/logout");
     }
 }
+
 //put 
 export async function toRefreshToken(req: IRequest, res: IResponse) {
     try {
@@ -107,24 +119,25 @@ export async function toRefreshToken(req: IRequest, res: IResponse) {
 
         if (!token) return res.sendError(401, "PUT /auth/token/refresh");
 
-        const isRefreshTokenInDb = users.some(customer => customer.refreshToken === token);
-
-        if (!isRefreshTokenInDb) return res.sendError(401, "PUT /auth/token/refresh");
+        let user = await prisma.user.findUniqueOrThrow({
+            where: {
+                refreshToken: token
+            }
+        });
 
         jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (error, data) => {
             if (error || typeof data === 'string') return res.sendError(401, "PUT /auth/token/refresh");
-            let { userId } = data;
-            const accessToken = _generateAccessToken(userId);
+
+            const accessToken = _generateAccessToken(user.id);
             res.writeHead(200);
             req.profiler.done({ message: `Send  ${req.method} response`, level: 'debug' });
-            req.logger.http({ message: `${req.url}`, userId });
-            res.end(JSON.stringify({ userId, accessToken }));
+            req.logger.http({ message: `${req.url}`, userId: user.id });
+            res.end(JSON.stringify({ user, accessToken }));
         })
     } catch (error) {
         res.sendError(500, "PUT /auth/token/refresh", "Sorry, something went wrong! Sign up is vaild!");
     }
 }
-
 //post
 export async function loginViaToken(req: IRequest, res: IResponse) {
     try {
@@ -133,11 +146,20 @@ export async function loginViaToken(req: IRequest, res: IResponse) {
         if (!token)
             return res.sendError(401, "POST auth/loginViaToken", "Who are you? 8D")
 
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, data) => {
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, data) => {
             if (error || typeof data === 'string')
-                throw new BaseError(http.STATUS_CODES[403], 403, true, "Token has been expired!");
+                return res.sendError(403, "Token has been expired!");
+
             let { userId } = data;
-            let user = users.find(customer => customer.id === userId);
+
+            let user = await prisma.user.findUnique({
+                where: {
+                    id: userId
+                },
+                include: {
+                    request: true
+                }
+            })
             if (!user) return res.sendError(401, "/auth/token/login");
 
             res.writeHead(200);
@@ -156,5 +178,5 @@ export async function loginViaToken(req: IRequest, res: IResponse) {
 }
 
 function _generateAccessToken(userId: string) {
-    return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+    return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
 }
