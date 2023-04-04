@@ -8,8 +8,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run _prebuild && npx tsc && pm2 start dev.ecosystem.config.cjs --watch",
     "prod": "npm run _prebuild && pm2 start prod.ecosystem.config.cjs --attach",
+    "git-run": "pm2 start dev.ecosystem.config.cjs --attach",
     "debug": "node --inspect-brk index.js",
     "clean-log": "node scripts/cleanLog.js",
+    "build": "npm run _prebuild && npx tsc",
     "_prebuild": "rimraf build"
   },
   "author": "Denys Vynohradnyi",
