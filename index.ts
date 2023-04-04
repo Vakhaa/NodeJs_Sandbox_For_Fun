@@ -21,14 +21,6 @@ const server = http.createServer((request, response) => {
     routers(req, res, [httpErrorMiddleware, urlParserMiddleware, bodyParserMiddleware]);
 });
 
-const port = (): number => {
-    try {
-        return Number(process.env.PORT);
-    } catch {
-        return 3000;
-    }
-};
-
-server.listen(port(), process.env.HOST || "localhost", () => {
-    logger.info(`Server is running on http://${process.env.HOST}:${process.env.PORT}`);
+server.listen(3000, process.env.HOST || "localhost", () => {
+    logger.info(`Server is running on http://${process.env.HOST}:3000`);
 });
