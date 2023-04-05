@@ -1,4 +1,4 @@
-# This project is a <mark>Vanilla Node.js REST API</mark> without Frameworks
+# This project is a <mark  style="background-color: #FFFF00">Vanilla Node.js REST API</mark> without Frameworks
 
 ---
 
@@ -28,19 +28,19 @@ This project was created utilizing such technologies:
 
 ## :clipboard: Table of Contents
 
-- [:eyes: Overview](#-overview)
-- [:floppy_disk: Quick Start](#-quick-start)
-- [:art: Screenshots](#-screenshots)
-- [:warning: Let's talk](#-lets-talk)
+- [:eyes: Overview](#eyes-overview)
+- [:floppy_disk: Quick Start](#floppy_disk-quick-start)
+- [:art: Screenshots](#art-screenshots)
+- [:warning: Let's talk](#warning-lets-talk)
   - [Why pure Node.js?](#why-pure-nodejs)
   - [Rest Ap](#rest-api)
   - [Middleware](#middleware)
   - [Logging. Winston](#logging-winston)
   - [PostgreSQL & Prisma](#postgresql--prisma)
   - [PM2](#pm2)
-- [:rocket: Features](#-features)
-- [:card_file_box: Last 5 Update](#-last-5-update)
-- [:link: Footnotes](#-footnotes)
+- [:rocket: Features](#rocket-features)
+- [:card_file_box: Last 5 Update](#card_file_box-last-5-update)
+- [:link: Footnotes](#link-footnotes)
 
 ---
 
