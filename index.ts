@@ -32,3 +32,10 @@ const port = (): number => {
 server.listen(port(), process.env.HOST || "localhost", () => {
     logger.info(`Server is running on http://${process.env.HOST}:${process.env.PORT}`);
 });
+
+
+process.on('SIGTERM', function () {
+    server.close(function () {
+        process.exit(0);
+    });
+});
