@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsc && pm2 start dev.ecosystem.config.cjs --watch",
-    "prod": "pm2 start prod.ecosystem.config.cjs --attach",
+    "dev": "npm run prestart && npm run build && pm2 start dev.ecosystem.config.cjs --watch",
+    "start": "npm run build && pm2 start prod.ecosystem.config.cjs --attach",
+    "build": "tsc -p .",
     "debug": "node --inspect-brk index.js",
     "prestart": "rimraf build",
     "clean-log": "node scripts/cleanLog.js"
