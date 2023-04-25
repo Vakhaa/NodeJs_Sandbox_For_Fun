@@ -139,8 +139,8 @@
     </section>
     <footer>
         <nav>
-            <a href="http://localhost:3000/home">Home</a>
-            <a href="http://localhost:3000/login">Login</a>
+            <a href="https://nodejs-for-fun.onrender.com/home">Home</a>
+            <a href="https://nodejs-for-fun.onrender.com/login">Login</a>
         </nav>
     </footer>
 
@@ -157,7 +157,7 @@
             alert("This form has been successfully submitted!");
             window.sessionStorage.setItem("accessToken", data.accessToken);
             window.sessionStorage.setItem("refreshToken", data.refreshToken);
-            window.location.assign('http://localhost:3000/home');
+            window.location.assign('https://nodejs-for-fun.onrender.com/home');
 
         }
 
@@ -177,7 +177,7 @@
             } else {
                 var formData = new FormData(signupForm);
 
-                req.open("POST", "http://localhost:3000/auth/signup");
+                req.open("POST", "https://nodejs-for-fun.onrender.com/auth/signup");
 
                 req.setRequestHeader("Content-Type", "application/json");
 

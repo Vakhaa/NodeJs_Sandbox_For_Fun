@@ -186,14 +186,14 @@
 
     <section id="navigation">
         <nav>
-            <a href="http://localhost:3000/login">Login</a>
-            <a href="http://localhost:3000/signup">Sign Up</a>
+            <a href="https://nodejs-for-fun.onrender.com/login">Login</a>
+            <a href="https://nodejs-for-fun.onrender.com/signup">Sign Up</a>
         </nav>
     </section>
 
     <main id="content">
         <p>
-            Without <a href="http://localhost:3000/login">authorization</a>, you can't make a requests!
+            Without <a href="https://nodejs-for-fun.onrender.com/login">authorization</a>, you can't make a requests!
         </p>
         <section id="requests">
             <header id="requests_header">
@@ -257,7 +257,7 @@
                         console.log("onerror", data);
                     };
 
-                    req.open("PUT", "http://localhost:3000/auth/token/refresh");
+                    req.open("PUT", "https://nodejs-for-fun.onrender.com/auth/token/refresh");
 
                     req.setRequestHeader("Content-Type", "application/json");
 
@@ -272,7 +272,7 @@
                 console.log("onerror", data);
             };
 
-            request.open("PoSt", "http://localhost:3000/auth/token/login");
+            request.open("PoSt", "https://nodejs-for-fun.onrender.com/auth/token/login");
 
             request.setRequestHeader("Content-Type", "application/json");
 
@@ -315,7 +315,7 @@
 
                     const auth = document.createElement("a");
                     const authText = document.createTextNode("authorization");
-                    auth.setAttribute("href", "http://localhost:3000/login");
+                    auth.setAttribute("href", "https://nodejs-for-fun.onrender.com/login");
                     auth.appendChild(authText);
                     contentP.replaceChildren(messageStart);
                     contentP.appendChild(auth);
@@ -329,7 +329,7 @@
                     console.log("onerror", data);
                 };
 
-                req.open("DELETE", "http://localhost:3000/auth/logout");
+                req.open("DELETE", "https://nodejs-for-fun.onrender.com/auth/logout");
 
                 req.setRequestHeader("Content-Type", "application/json");
 
@@ -460,7 +460,7 @@
                     console.log("onerror", data);
                     // insertResponse(data);
                     setTimeout(function () {
-                        window.location.assign('http://localhost:3000/error');
+                        window.location.assign('https://nodejs-for-fun.onrender.com/error');
                     }, 500);
                 };
 
@@ -592,7 +592,7 @@
                     console.log("onerror", data);
                     // insertResponse(data);
                     setTimeout(function () {
-                        window.location.assign('http://localhost:3000/error');
+                        window.location.assign('https://nodejs-for-fun.onrender.com/error');
                     }, 500);
                 };
 
@@ -665,7 +665,7 @@
                     console.log("onerror", data);
                     // insertResponse(data);
                     setTimeout(function () {
-                        window.location.assign('http://localhost:3000/error');
+                        window.location.assign('https://nodejs-for-fun.onrender.com/error');
                     }, 500);
                 };
 
@@ -679,7 +679,7 @@
 
         function getUsers() {
             const req = new XMLHttpRequest();
-            req.open("get", "http://localhost:3000/jsonplaceholder/users");
+            req.open("get", "https://nodejs-for-fun.onrender.com/jsonplaceholder/users");
             req.onload = function (event) {
                 let data = req.response;
                 insertResponse(data);
@@ -689,7 +689,7 @@
                 console.log("onerror", data);
                 // insertResponse(data);
                 setTimeout(function () {
-                    window.location.assign('http://localhost:3000/error');
+                    window.location.assign('https://nodejs-for-fun.onrender.com/error');
                 }, 500);
             };
 
@@ -702,12 +702,12 @@
 
         function getPosts() {
             const req = new XMLHttpRequest();
-            req.open("get", "http://localhost:3000/jsonplaceholder/posts");
+            req.open("get", "https://nodejs-for-fun.onrender.com/jsonplaceholder/posts");
             req.onload = function (event) {
                 let data = req.response;
                 if (data.error) {
                     setTimeout(function () {
-                        window.location.assign('http://localhost:3000/error');
+                        window.location.assign('https://nodejs-for-fun.onrender.com/error');
                     }, 500);
                 }
                 insertResponse(data);
@@ -717,7 +717,7 @@
                 console.log("onerror", data);
                 // insertResponse(data);
                 setTimeout(function () {
-                    window.location.assign('http://localhost:3000/error');
+                    window.location.assign('https://nodejs-for-fun.onrender.com/error');
                 }, 500);
             };
 
@@ -740,7 +740,7 @@
             const user = document.createElement("a");
             const userContetnt = document.createTextNode("user");
             user.appendChild(userContetnt);
-            user.addEventListener('click', () => { insertFormIdForRequest("get", "http://localhost:3000/jsonplaceholder/users") });
+            user.addEventListener('click', () => { insertFormIdForRequest("get", "https://nodejs-for-fun.onrender.com/jsonplaceholder/users") });
             user.setAttribute("href", "#");
             endpoints.appendChild(user);
 
@@ -755,7 +755,7 @@
             const post = document.createElement("a");
             const postContetnt = document.createTextNode("post");
             post.appendChild(postContetnt);
-            post.addEventListener('click', () => { insertFormIdForRequest("get", "http://localhost:3000/jsonplaceholder/posts") });
+            post.addEventListener('click', () => { insertFormIdForRequest("get", "https://nodejs-for-fun.onrender.com/jsonplaceholder/posts") });
             post.setAttribute("href", "#");
             endpoints.appendChild(post);
         }
@@ -765,14 +765,14 @@
             const user = document.createElement("a");
             const userContetnt = document.createTextNode("user");
             user.appendChild(userContetnt);
-            user.addEventListener('click', () => { insertFormIdForRequest("delete", "http://localhost:3000/jsonplaceholder/users") });
+            user.addEventListener('click', () => { insertFormIdForRequest("delete", "https://nodejs-for-fun.onrender.com/jsonplaceholder/users") });
             user.setAttribute("href", "#");
             endpoints.appendChild(user);
 
             const post = document.createElement("a");
             const postContetnt = document.createTextNode("post");
             post.appendChild(postContetnt);
-            post.addEventListener('click', () => { insertFormIdForRequest("delete", "http://localhost:3000/jsonplaceholder/posts") });
+            post.addEventListener('click', () => { insertFormIdForRequest("delete", "https://nodejs-for-fun.onrender.com/jsonplaceholder/posts") });
             post.setAttribute("href", "#");
             endpoints.appendChild(post);
         }
@@ -781,14 +781,14 @@
             const user = document.createElement("a");
             const userContetnt = document.createTextNode("user");
             user.appendChild(userContetnt);
-            user.addEventListener('click', () => { insertUserFormForRequest("post", "http://localhost:3000/jsonplaceholder/users", false) });
+            user.addEventListener('click', () => { insertUserFormForRequest("post", "https://nodejs-for-fun.onrender.com/jsonplaceholder/users", false) });
             user.setAttribute("href", "#");
             endpoints.appendChild(user);
 
             const post = document.createElement("a");
             const postContetnt = document.createTextNode("post");
             post.appendChild(postContetnt);
-            post.addEventListener('click', () => { insertPostFormForRequest("post", "http://localhost:3000/jsonplaceholder/posts", false) });
+            post.addEventListener('click', () => { insertPostFormForRequest("post", "https://nodejs-for-fun.onrender.com/jsonplaceholder/posts", false) });
             post.setAttribute("href", "#");
             endpoints.appendChild(post);
         }
@@ -797,14 +797,14 @@
             const user = document.createElement("a");
             const userContetnt = document.createTextNode("user");
             user.appendChild(userContetnt);
-            user.addEventListener('click', () => { insertUserFormForRequest("put", "http://localhost:3000/jsonplaceholder/users", true) });
+            user.addEventListener('click', () => { insertUserFormForRequest("put", "https://nodejs-for-fun.onrender.com/jsonplaceholder/users", true) });
             user.setAttribute("href", "#");
             endpoints.appendChild(user);
 
             const post = document.createElement("a");
             const postContetnt = document.createTextNode("post");
             post.appendChild(postContetnt);
-            post.addEventListener('click', () => { insertPostFormForRequest("put", "http://localhost:3000/jsonplaceholder/posts", true) });
+            post.addEventListener('click', () => { insertPostFormForRequest("put", "https://nodejs-for-fun.onrender.com/jsonplaceholder/posts", true) });
             post.setAttribute("href", "#");
             endpoints.appendChild(post);
         }

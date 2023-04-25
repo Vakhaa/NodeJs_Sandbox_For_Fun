@@ -137,8 +137,8 @@
     </section>
     <footer>
         <nav>
-            <a href="http://localhost:3000/home">Home</a>
-            <a href="http://localhost:3000/signup">Sign Up</a>
+            <a href="https://nodejs-for-fun.onrender.com/home">Home</a>
+            <a href="https://nodejs-for-fun.onrender.com/signup">Sign Up</a>
         </nav>
     </footer>
 
@@ -153,7 +153,7 @@
             alert("This form has been successfully submitted!");
             window.sessionStorage.setItem("accessToken", data.accessToken);
             window.sessionStorage.setItem("refreshToken", data.refreshToken);
-            window.location.assign('http://localhost:3000/home');
+            window.location.assign('https://nodejs-for-fun.onrender.com/home');
         }
 
         req.addEventListener("load", reqListener);
@@ -172,7 +172,7 @@
                 // perform operation with form input
                 var formData = new FormData(loginForm);
 
-                req.open("POST", "http://localhost:3000/auth/login");
+                req.open("POST", "https://nodejs-for-fun.onrender.com/auth/login");
 
                 req.setRequestHeader("Content-Type", "application/json");
 
