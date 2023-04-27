@@ -79,7 +79,7 @@ docker run -dp 3000:3000 <image-name>
 
 4. Open `http://localhost:3000` in your browser
 
-5. Endpoints: nodejs-for-fun.onrender.com/swagger
+5. Endpoints: [nodejs-for-fun.onrender.com/swagger](https://nodejs-for-fun.onrender.com/swagger)
 
 ---
 
